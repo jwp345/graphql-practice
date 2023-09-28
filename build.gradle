@@ -32,3 +32,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+generateJava{
+	packageName = 'com.course.graphql.generated'
+	generateClient = true
+}
