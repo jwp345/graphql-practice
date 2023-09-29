@@ -1,6 +1,7 @@
 package com.course.graphql.exception.handler;
 
 import com.course.graphql.exception.ProblemzAuthenticationException;
+import com.course.graphql.exception.ProblemzPermissionException;
 import com.netflix.graphql.dgs.exceptions.DefaultDataFetcherExceptionHandler;
 import com.netflix.graphql.types.errors.ErrorType;
 import com.netflix.graphql.types.errors.TypedGraphQLError;
@@ -25,6 +26,16 @@ public class ProblemzGraphqlExceptionHandler implements DataFetcherExceptionHand
                     .path(handlerParameters.getPath())
                     .errorType(ErrorType.UNAUTHENTICATED)
                     .errorDetail(new ProblemzErrorDetail())
+                    .build();
+
+            var result = DataFetcherExceptionHandlerResult.newResult()
+                    .error(graphqlError).build();
+
+            return CompletableFuture.completedFuture(result);
+        } else if(exception instanceof ProblemzPermissionException) {
+            var graphqlError = TypedGraphQLError.newBuilder().message(exception.getMessage())
+                    .path(handlerParameters.getPath())
+                    .errorType(ErrorType.PERMISSION_DENIED)
                     .build();
 
             var result = DataFetcherExceptionHandlerResult.newResult()

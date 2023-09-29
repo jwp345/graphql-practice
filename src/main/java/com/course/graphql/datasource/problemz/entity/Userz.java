@@ -23,6 +23,16 @@ public class Userz {
     private String displayName;
     private boolean active;
 
+    private String userRole;
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
     public UUID getId() {
         return id;
     }
