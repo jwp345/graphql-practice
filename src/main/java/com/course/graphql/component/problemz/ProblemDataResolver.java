@@ -9,6 +9,7 @@ import com.course.graphql.util.GraphqlBeanMapper;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.InputArgument;
+import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import reactor.core.publisher.Flux;
@@ -32,7 +33,8 @@ public class ProblemDataResolver {
     @DgsData(parentType = DgsConstants.QUERY_TYPE, field = DgsConstants.QUERY.ProblemDetail)
     public Problem getProblemDetail(@InputArgument(name = "id") String problemId) {
         var problemzId = UUID.fromString(problemId);
-        var problemz = queryService.problemzDetail(problemzId).get();
+        var problemz = queryService.problemzDetail(problemzId)
+                .orElseThrow(DgsEntityNotFoundException::new);
 
         return GraphqlBeanMapper.mapToGraphql(problemz);
     }

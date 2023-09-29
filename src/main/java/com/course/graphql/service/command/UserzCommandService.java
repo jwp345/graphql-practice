@@ -3,6 +3,7 @@ package com.course.graphql.service.command;
 import com.course.graphql.datasource.problemz.entity.UserzToken;
 import com.course.graphql.datasource.problemz.repository.UserzRepository;
 import com.course.graphql.datasource.problemz.repository.UserzTokenRepository;
+import com.course.graphql.exception.ProblemzAuthenticationException;
 import com.course.graphql.util.HashUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -27,7 +28,8 @@ public class UserzCommandService {
 
         if(userzQueryResult.isEmpty() ||
         !HashUtil.isBcryptMatch(password, userzQueryResult.get().getHashedPassword())) {
-            throw new IllegalArgumentException("Invalid credential");
+//            throw new IllegalArgumentException("Invalid credential");
+            throw new ProblemzAuthenticationException();
         }
 
         var randomAuthToken = RandomStringUtils.randomAlphanumeric(40);
