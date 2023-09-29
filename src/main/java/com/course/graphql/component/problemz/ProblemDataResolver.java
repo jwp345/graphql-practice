@@ -1,10 +1,13 @@
 package com.course.graphql.component.problemz;
 
+import com.course.graphql.exception.ProblemzAuthenticationException;
 import com.course.graphql.generated.DgsConstants;
 import com.course.graphql.generated.types.Problem;
 import com.course.graphql.generated.types.ProblemCreateInput;
 import com.course.graphql.generated.types.ProblemResponse;
+import com.course.graphql.service.command.ProblemzCommandService;
 import com.course.graphql.service.query.ProblemzQueryService;
+import com.course.graphql.service.query.UserzQueryService;
 import com.course.graphql.util.GraphqlBeanMapper;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
@@ -23,6 +26,12 @@ public class ProblemDataResolver {
 
     @Autowired
     private ProblemzQueryService queryService;
+
+    @Autowired
+    private ProblemzCommandService commandService;
+
+    @Autowired
+    private UserzQueryService userzQueryService;
 
     @DgsData(parentType = DgsConstants.QUERY_TYPE, field = DgsConstants.QUERY.ProblemLatestList)
     public List<Problem> getProblemLatestList() {
@@ -43,7 +52,12 @@ public class ProblemDataResolver {
     public ProblemResponse createProblem(
             @RequestHeader(name = "authToken", required = true) String authToken,
             @InputArgument(name = "problem")ProblemCreateInput problemCreateInput) {
-        return null;
+        var userz = userzQueryService.findUserzByAuthToken(authToken)
+                .orElseThrow(ProblemzAuthenticationException::new);
+        var problemz = GraphqlBeanMapper.mapToEntity(problemCreateInput, userz);
+        var created = commandService.createProblemz(problemz);
+
+        return ProblemResponse.newBuilder().problem(GraphqlBeanMapper.mapToGraphql(created)).build();
     }
 
     @DgsData(parentType = DgsConstants.SUBSCRIPTION_TYPE, field = DgsConstants.SUBSCRIPTION.ProblemAdded)
