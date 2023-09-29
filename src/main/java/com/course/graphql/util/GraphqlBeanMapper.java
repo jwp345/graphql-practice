@@ -81,6 +81,6 @@ public class GraphqlBeanMapper {
         result.setAuthToken(original.getAuthToken());
         result.setExpiryTime(expiryDateTime);
 
-        return null;
+        return result;
     }
 }
