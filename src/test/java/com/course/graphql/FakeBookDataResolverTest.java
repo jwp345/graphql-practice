@@ -53,10 +53,8 @@ public class FakeBookDataResolverTest {
             assertNotNull(authors);
             assertEquals(titles.size(), authors.size());
 
-            List<Integer> releaseYears = dgsQueryExecutor.executeAndExtractJsonPathAsObject(
-                    graphqlQueryRequest, "data.books[*].released.year",
-                    new TypeRef<List<Integer>>() {
-                    }
+            List<Integer> releaseYears = dgsQueryExecutor.executeAndExtractJsonPath(
+                    graphqlQueryRequest, "data.books[*].released.year"
             );
 
             assertNotNull(releaseYears);
