@@ -31,7 +31,12 @@ public class UserDataResolver {
 
     @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.UserCreate)
     public UserResponse createUser(@InputArgument(name = "user")UserCreateInput userCreateInput) {
-        return null;
+        var userz = GraphqlBeanMapper.mapToEntity(userCreateInput);
+        var saved = userzCommandService.createUserz(userz);
+        var userResponse = UserResponse.newBuilder().user(
+                GraphqlBeanMapper.mapToGraphql(saved)).build();
+
+        return userResponse;
     }
 
     @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.UserLogin)
@@ -48,6 +53,12 @@ public class UserDataResolver {
 
     @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.UserActivation)
     public UserActivationResponse userActivation(@InputArgument(name = "user") UserActivationInput userActivationInput) {
-        return null;
+        var updated = userzCommandService.activateUser(
+                userActivationInput.getUsername(), userActivationInput.getActive()
+        ).orElseThrow(DgsEntityNotFoundException::new);
+        var userActivationResponse = UserActivationResponse.newBuilder()
+                .isActive(updated.isActive()).build();
+
+        return userActivationResponse;
     }
 }

@@ -110,4 +110,18 @@ public class GraphqlBeanMapper {
 
         return result;
     }
+
+    public static Userz mapToEntity(UserCreateInput original) {
+        var result = new Userz();
+
+        result.setId(UUID.randomUUID());
+        result.setHashedPassword(HashUtil.hashBcrypt(original.getPassword()));
+        result.setUsername(original.getUsername());
+        result.setEmail(original.getEmail());
+        result.setDisplayName(original.getDisplayName());
+        result.setAvatar(original.getAvatar());
+        result.setActive(true);
+
+        return result;
+    }
 }
